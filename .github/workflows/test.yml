@@ -1,0 +1,44 @@
+name: Count Up Value in JSON and Modify File  
+  
+on:  
+  schedule:  
+    - cron: "0 9 * * 1-52/2"  
+  
+jobs:  
+  count-up-value-in-json-and-modify-file:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Checkout code  
+        uses: actions/checkout@v2  
+  
+      - name: Read value from JSON  
+        id: read-value  
+        run: |  
+          VALUE=$(jq '.latest' release.json)  
+          echo "::set-output name=value::${VALUE}"  
+  
+      - name: Count up value  
+        id: count-up  
+        run: echo "::set-output name=value::$((${{ steps.read-value.outputs.value }} + 1))"  
+  
+      - name: Modify JSON  
+        run: |  
+          NEW_VALUE=$(echo "${{ steps.count-up.outputs.value }}" | jq '.')  
+          jq '.latest = $new_value' --argjson new_value "$NEW_VALUE" release.json > release.json.tmp  
+          mv release.json.tmp release.json  
+  
+      - name: Commit changes  
+        run: |  
+          git config --local user.email "action@github.com"  
+          git config --local user.name "GitHub Action"  
+          git add release.json  
+          git commit -m "Increase release number"
+  
+      - name: Create pull request  
+        uses: peter-evans/create-pull-request@v3  
+        with:  
+          token: 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  
+          commit-message: "Count up value in data.json"  
+          branch: modify-file  
+          title: "Count up value in data.json"  
+          body: "This is an automated pull request."  
