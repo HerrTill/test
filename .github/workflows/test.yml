@@ -28,7 +28,7 @@ jobs:
 
       - name: Modify JSON
         run: |
-          NEW_VALUE="${{ steps.increment-version.outputs.major }}.${{ steps.increment-version.outputs.minor }}.${{ steps.increment-version.outputs.patch }}"
+          NEW_VALUE="${{ steps.read-value.outputs.major }}.${{ steps.read-value.outputs.minor }}.${{ steps.read-value.outputs.patch }}"
           jq '.latest = $new_value' --arg new_value "$NEW_VALUE" release.json > release.json.tmp
           mv release.json.tmp release.json
   
