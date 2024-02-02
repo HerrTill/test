@@ -16,15 +16,15 @@ jobs:
         id: read-value  
         run: |  
           VALUE=$(jq -r '.latest' release.json)
-          echo "value=${VALUE}" 
+          echo "value=${VALUE}" >> $GITHUB_ENV 
           IFS='.' read -r -a VERSION_PARTS <<< "${VALUE}"
           MAJOR=${VERSION_PARTS[0]}
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
           PATCH=$((PATCH + 1))
-          echo "::set-env name=MAJOR::${MAJOR}"
-          echo "::set-env name=MINOR::${MINOR}"
-          echo "::set-env name=PATCH::${PATCH}"
+          echo "MAJOR=${MAJOR}" >> $GITHUB_ENV 
+          echo "MINOR=${MINOR}" >> $GITHUB_ENV 
+          echo "PATCH=${PATCH}" >> $GITHUB_ENV
 
       - name: Modify JSON
         run: |
@@ -35,7 +35,4 @@ jobs:
       - name: Create pull request  
         uses: peter-evans/create-pull-request@v6
         with:  
-          commit-message: "Count up value in data.json"  
-          branch: new-release 
-          title: "New release"  
-          body: "This is an automated pull request."
+          commit-message: "Count up value in 
