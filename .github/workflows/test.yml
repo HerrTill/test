@@ -17,27 +17,13 @@ jobs:
         run: |  
           VALUE=$(jq '.latest' release.json)  
           echo "::set-output name=value::${VALUE}"  
-  
-      - name: Parse version number
-        id: parse-version
-        run: |
-          IFS='.' read -r -a VERSION_PARTS <<< "${{ steps.read-value.outputs.value }}"
+          IFS='.' read -r -a VERSION_PARTS <<< "${VALUE}"
           MAJOR=${VERSION_PARTS[0]}
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
-          echo "::set-output name=major::${MAJOR}"
-          echo "::set-output name=minor::${MINOR}"
-          echo "::set-output name=patch::${PATCH}"
-
-      - name: Increment version number
-        id: increment-version
-        run: |
-          MAJOR="${{ steps.parse-version.outputs.major }}"
-          MINOR="${{ steps.parse-version.outputs.minor }}"
-          PATCH="${{ steps.parse-version.outputs.patch }}"
           PATCH=$((PATCH + 1))
-          echo "::set-output name=major::${MAJOR}"
-          echo "::set-output name=minor::${MINOR}"
+          echo "::set-output name=major::${MAJOR}"  
+          echo "::set-output name=minor::${MINOR}"  
           echo "::set-output name=patch::${PATCH}"
 
       - name: Modify JSON
