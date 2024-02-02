@@ -11,9 +11,6 @@ jobs:
     steps:  
       - name: Checkout code  
         uses: actions/checkout@v2
-
-      - name: Create Branch
-        run: git checkout -b new-branch
   
       - name: Read value from JSON  
         id: read-value  
