@@ -56,4 +56,3 @@ jobs:
           branch: new-release 
           title: "New release"  
           body: "This is an automated pull request."
-          draft: true
