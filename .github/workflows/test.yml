@@ -15,16 +15,16 @@ jobs:
       - name: Read value from JSON  
         id: read-value  
         run: |  
-          VALUE=$(jq '.latest' release.json)  
-          echo "::set-output name=value::${VALUE}"  
+          VALUE=$(jq '.latest' release.json)
+          echo "value=${VALUE}" >> $GITHUB_OUTPUT 
           IFS='.' read -r -a VERSION_PARTS <<< "${VALUE}"
           MAJOR=${VERSION_PARTS[0]}
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
           PATCH=$((PATCH + 1))
-          echo "::set-output name=major::${MAJOR}"  
-          echo "::set-output name=minor::${MINOR}"  
-          echo "::set-output name=patch::${PATCH}"
+          echo "major=${MAJOR}" >> $GITHUB_OUTPUT 
+          echo "minor=${MINOR}" >> $GITHUB_OUTPUT 
+          echo "patch=${PATCH}" >> $GITHUB_OUTPUT
 
       - name: Modify JSON
         run: |
