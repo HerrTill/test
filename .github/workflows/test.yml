@@ -15,20 +15,20 @@ jobs:
       - name: Read value from JSON  
         id: read-value  
         run: |  
-          VALUE=$(jq '.latest' release.json)
-          echo "value=${VALUE}" >> $GITHUB_OUTPUT 
+          VALUE=$(jq -r '.latest' release.json)
+          echo "value=${VALUE}" 
           IFS='.' read -r -a VERSION_PARTS <<< "${VALUE}"
           MAJOR=${VERSION_PARTS[0]}
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
           PATCH=$((PATCH + 1))
-          echo "major=${MAJOR}" >> $GITHUB_OUTPUT 
-          echo "minor=${MINOR}" >> $GITHUB_OUTPUT 
-          echo "patch=${PATCH}" >> $GITHUB_OUTPUT
+          echo "::set-env name=MAJOR::${MAJOR}"
+          echo "::set-env name=MINOR::${MINOR}"
+          echo "::set-env name=PATCH::${PATCH}"
 
       - name: Modify JSON
         run: |
-          NEW_VALUE="${{ steps.read-value.outputs.major }}.${{ steps.read-value.outputs.minor }}.${{ steps.read-value.outputs.patch }}"
+          NEW_VALUE="${MAJOR}.${MINOR}.${PATCH}"
           jq '.latest = $new_value' --arg new_value "$NEW_VALUE" release.json > release.json.tmp
           mv release.json.tmp release.json
   
