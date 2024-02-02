@@ -13,9 +13,7 @@ jobs:
         uses: actions/checkout@v2  
 
       - name: Checkout branch 
-        run: |  
-          git config --local user.email "tenorhorn7@gmail.com"  
-          git config --local user.name "Till"
+        run: |
           git checkout -b new-release
           git pull
   
