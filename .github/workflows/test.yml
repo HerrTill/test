@@ -1,8 +1,9 @@
 name: Count Up Value in JSON and Modify File  
   
 on:  
-  schedule:  
-    - cron: "0 9 * * 1-52/2"  
+  push:  
+    branches:
+      - main
   
 jobs:  
   count-up-value-in-json-and-modify-file:  
@@ -10,6 +11,12 @@ jobs:
     steps:  
       - name: Checkout code  
         uses: actions/checkout@v2  
+
+      - name: Checkout branch 
+        run: |  
+          git config --local user.email "tenorhorn7@gmail.com"  
+          git config --local user.name "Till"
+          git checkout -b new-release
   
       - name: Read value from JSON  
         id: read-value  
@@ -17,28 +24,50 @@ jobs:
           VALUE=$(jq '.latest' release.json)  
           echo "::set-output name=value::${VALUE}"  
   
-      - name: Count up value  
-        id: count-up  
-        run: echo "::set-output name=value::$((${{ steps.read-value.outputs.value }} + 1))"  
+      - name: Parse version number
+        id: parse-version
+        run: |
+          IFS='.' read -r -a VERSION_PARTS <<< "${{ steps.read-value.outputs.value }}"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+          echo "::set-output name=major::${MAJOR}"
+          echo "::set-output name=minor::${MINOR}"
+          echo "::set-output name=patch::${PATCH}"
+
+      - name: Increment version number
+        id: increment-version
+        run: |
+          MAJOR="${{ steps.parse-version.outputs.major }}"
+          MINOR="${{ steps.parse-version.outputs.minor }}"
+          PATCH="${{ steps.parse-version.outputs.patch }}"
+          PATCH=$((PATCH + 1))
+          echo "::set-output name=major::${MAJOR}"
+          echo "::set-output name=minor::${MINOR}"
+          echo "::set-output name=patch::${PATCH}"
+
+      - name: Modify JSON
+        run: |
+          NEW_VALUE="${{ steps.increment-version.outputs.major }}.${{ steps.increment-version.outputs.minor }}.${{ steps.increment-version.outputs.patch }}"
+          jq '.latest = $new_value' --arg new_value "$NEW_VALUE" release.json > release.json.tmp
+          mv release.json.tmp release.json
+
   
-      - name: Modify JSON  
-        run: |  
-          NEW_VALUE=$(echo "${{ steps.count-up.outputs.value }}" | jq '.')  
-          jq '.latest = $new_value' --argjson new_value "$NEW_VALUE" release.json > release.json.tmp  
-          mv release.json.tmp release.json  
-  
-      - name: Commit changes  
-        run: |  
-          git config --local user.email "action@github.com"  
-          git config --local user.name "GitHub Action"  
-          git add release.json  
-          git commit -m "Increase release number"
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Increase release number
+          file_pattern: release.json
+          branch: new-release
+          commit_user_name: GitHub Action
+          commit_user_email: action@github.com
+          commit_author: GitHub Action <action@github.com>
   
       - name: Create pull request  
         uses: peter-evans/create-pull-request@v3  
         with:  
-          token: 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  
           commit-message: "Count up value in data.json"  
-          branch: modify-file  
-          title: "Count up value in data.json"  
-          body: "This is an automated pull request."  
+          branch: new-release 
+          title: "New release"  
+          body: "This is an automated pull request."
+          draft: true
