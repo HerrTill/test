@@ -35,4 +35,7 @@ jobs:
       - name: Create pull request  
         uses: peter-evans/create-pull-request@v6
         with:  
-          commit-message: "Count up value in 
+          commit-message: "Count up value in data.json"  
+          branch: new-release 
+          title: "New release"  
+          body: "This is an automated pull request."
