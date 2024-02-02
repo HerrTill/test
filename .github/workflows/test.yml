@@ -11,11 +11,6 @@ jobs:
     steps:  
       - name: Checkout code  
         uses: actions/checkout@v2  
-
-      - name: Checkout branch 
-        run: |
-          git checkout -b new-release
-          git pull
   
       - name: Read value from JSON  
         id: read-value  
