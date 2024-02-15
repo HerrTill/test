@@ -1,16 +1,19 @@
-name: Count Up Value in JSON and Modify File  
+name: Create Pull Request for new Release
   
 on:  
+  on:
+  schedule:
+    - cron: '0 10 * * 0/2' 
   push:  
     branches:
-      - main
+      - test-create-release
   
 jobs:  
   count-up-value-in-json-and-modify-file:  
-    runs-on: ubuntu-latest  
+    runs-on: self-hosted
     steps:  
       - name: Checkout code  
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
   
       - name: Read value from JSON  
         id: read-value  

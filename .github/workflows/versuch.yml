@@ -1,0 +1,24 @@
+name: Check if anything has been merged into master  
+  
+on:  
+  push:
+    branch:
+      - versuch
+  
+jobs:  
+  check-merged:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Checkout code  
+        uses: actions/checkout@v2  
+  
+      - name: Check if anything has been merged into master  
+        run: |  
+          merged=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \  
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits?sha=master&since=$(date --date='14 days ago' +%Y-%m-%dT%H:%M:%SZ)" \  
+            | jq '.[].sha' | tr -d '"')  
+          if [[ -n "$merged" ]]; then  
+            echo "There have been commits merged into master within the last 14 days."  
+          else  
+            echo "There have not been any commits merged into master within the last 14 days."  
+          fi  
