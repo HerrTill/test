@@ -16,7 +16,3 @@ jobs:
         run: |  
           LATEST_COMMIT=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/master" | jq -r '.commit.committer.date')  
           echo "::set-output name=timestamp::$(date -d \"$LATEST_COMMIT\" +%s)"  
-  
-      - name: Create pull request
-        if: github.ref == 'refs/heads/main' && (fromJSON(github.event.head_commit.timestamp) | mktime) > (now - duration('14d')).seconds)  
-        run: echo "Yes"
