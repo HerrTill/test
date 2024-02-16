@@ -12,13 +12,6 @@ jobs:
       - name: Checkout code  
         uses: actions/checkout@v3 
   
-      - name: Check if anything has been merged into master  
-        run: |  
-          merged=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \  
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits?sha=master&since=$(date --date='14 days ago' +%Y-%m-%dT%H:%M:%SZ)" \  
-            | jq '.[].sha' | tr -d '"')  
-          if [[ -n "$merged" ]]; then  
-            echo "There have been commits merged into master within the last 14 days."  
-          else  
-            echo "There have not been any commits merged into master within the last 14 days."  
-          fi  
+      - name: Create pull request
+        if: github.ref == 'refs/heads/main' && (github.event.head_commit.timestamp | fromdateiso8601) > (now - duration('14d')).timestamp 
+        run: echo "Yes"

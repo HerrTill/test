@@ -35,7 +35,8 @@ jobs:
           jq '.latest = $new_value' --arg new_value "$NEW_VALUE" release.json > release.json.tmp
           mv release.json.tmp release.json
   
-      - name: Create pull request  
+      - name: Create pull request
+        if: github.ref == 'refs/heads/main' && (github.event.head_commit.timestamp | fromdateiso8601) > (now - duration('14d')).timestamp 
         uses: peter-evans/create-pull-request@v6
         with:  
           commit-message: "Count up value in data.json"  
