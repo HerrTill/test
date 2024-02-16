@@ -14,5 +14,5 @@ jobs:
       - name: Get timestamp of latest commit on master  
         id: latest_commit  
         run: |  
-          LATEST_COMMIT=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/master" | jq -r '.commit.committer.date')  
+          LATEST_COMMIT=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/main" | jq -r '.commit.committer.date')  
           echo "timestamp=$(date -d \"$LATEST_COMMIT\" +%s)" >> $GITHUB_ENV 
