@@ -15,4 +15,4 @@ jobs:
         id: latest_commit  
         run: |  
           LATEST_COMMIT=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/master" | jq -r '.commit.committer.date')  
-          echo "::set-output name=timestamp::$(date -d \"$LATEST_COMMIT\" +%s)"  
+          echo "timestamp=$(date -d \"$LATEST_COMMIT\" +%s)" >> $GITHUB_ENV 
