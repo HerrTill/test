@@ -17,7 +17,7 @@ jobs:
         id: date_check
         run: |
           14_day_ago=$(date +%s -d "14 day ago")
-          last_commit="1708334034"
+          last_commit=1708334034
           if [[ last_commit > 14_day_ago ]]; then
             echo "create_new_release=true" >> $GITHUB_OUTPUT
           else
