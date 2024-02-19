@@ -2,7 +2,7 @@ name: Check if anything has been merged into master
   
 on:  
   push:
-    branch:
+    branches:
       - versuch
   
 jobs:  
