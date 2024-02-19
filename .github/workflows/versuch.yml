@@ -32,7 +32,7 @@ jobs:
         if: steps.date_check.outputs.create_new_release == 'true'
         run: |
           echo "New PR"
-      - name: Read value from JSON  
+      - name: Read value from JSON  2
         if: steps.date_check.outputs.create_new_release == 'false'
         run: |
           echo "No new PR"
