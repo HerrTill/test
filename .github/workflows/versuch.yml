@@ -18,7 +18,11 @@ jobs:
         run: |
           fourteen_day_ago=$(date +%s -d "7 day ago")
           last_commit=$(git show -s --format=%ct)
-          if [[ last_commit > 14_day_ago ]]; then
+          
+          echo "last_commit: ${last_commit}"
+          echo "past_timestamp: ${fourteen_day_ago}"
+
+          if [[ last_commit > fourteen_day_ago ]]; then
             echo "create_new_release=true" >> $GITHUB_OUTPUT
           else
             echo "create_new_release=false" >> $GITHUB_OUTPUT
