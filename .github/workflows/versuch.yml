@@ -22,7 +22,7 @@ jobs:
           echo "last_commit: ${last_commit}"
           echo "past_timestamp: ${fourteen_day_ago}"
 
-          if [[ last_commit > fourteen_day_ago ]]; then
+          if [[ last_commit -gt fourteen_day_ago ]]; then
             echo "create_new_release=true" >> $GITHUB_OUTPUT
           else
             echo "create_new_release=false" >> $GITHUB_OUTPUT
