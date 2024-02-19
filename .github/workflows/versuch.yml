@@ -8,13 +8,6 @@ jobs:
   check-merged:  
     runs-on: ubuntu-latest  
     steps:
-      - name: Install git 
-        run: |
-          apt-get install -y git
-          git --version
-          echo "Path is ... $PATH"
-          PATH=$PATH:$(which git)
-          echo "Path is ... $PATH"
       - name: Checkout code  
         uses: actions/checkout@v3 
         with:
@@ -24,7 +17,7 @@ jobs:
         id: date_check
         run: |
           14_day_ago=$(date +%s -d "14 day ago")
-          last_commit=$(git show -s --format=%ct)
+          last_commit="1708334034"
           if [[ last_commit > 14_day_ago ]]; then
             echo "create_new_release=true" >> $GITHUB_OUTPUT
           else
