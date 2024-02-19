@@ -7,7 +7,14 @@ on:
 jobs:  
   check-merged:  
     runs-on: ubuntu-latest  
-    steps:  
+    steps:
+      - name: Install git 
+        run: |
+          apt-get install -y git
+          git --version
+          echo "Path is ... $PATH"
+          PATH=$PATH:$(which git)
+          echo "Path is ... $PATH"
       - name: Checkout code  
         uses: actions/checkout@v3 
         with:
