@@ -11,9 +11,25 @@ jobs:
     steps:  
       - name: Checkout code  
         uses: actions/checkout@v3 
-      - name: Get timestamp of latest commit on master  
-        id: latest_commit  
-        run: |  
-          LATEST_COMMIT=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/commits/main" | jq -r '.commit.committer.date')  
-          echo "timestamp=$(date -d "$LATEST_COMMIT" +%s)"
-          echo "timestamp=$(date -d "$LATEST_COMMIT" +%s)" >> $GITHUB_ENV 
+        with:
+          ref: "main"
+
+      - name: Get timestamp of latest commit on master
+        id: date_check
+        run: |
+          14_day_ago=$(date +%s -d "14 day ago")
+          last_commit=$(git show -s --format=%ct)
+          if [[ last_commit > 14_day_ago ]]; then
+            echo "create_new_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "create_new_release=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Read value from JSON  
+        if: steps.date_check.outputs.create_new_release == 'true'
+        run: |
+          echo "New PR"
+      - name: Read value from JSON  
+        if: steps.date_check.outputs.create_new_release == 'false'
+        run: |
+          echo "No new PR"
