@@ -11,13 +11,13 @@ jobs:
       - name: Checkout code  
         uses: actions/checkout@v3 
         with:
-          ref: "versuch"
+          ref: "main"
 
       - name: Get timestamp of latest commit on master
         id: date_check
         run: |
-          fourteen_day_ago="1707128131";
-          last_commit="1708334034";
+          fourteen_day_ago=$(date +%s -d "14 day ago")
+          last_commit=$(git show -s --format=%ct)
           if [[ last_commit > 14_day_ago ]]; then
             echo "create_new_release=true" >> $GITHUB_OUTPUT
           else
